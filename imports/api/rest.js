@@ -12,7 +12,9 @@ var GET = Picker.filter(function (request, response) {
 //historiek bekijken
 GET.route(baseUrl + 'users/:userId/history', function(params, req, res, next) {
     //check user-acc for history
-    var tempUser = Meteor.users.findOne({_id:params._userId});
+    debugger;
+    var tempUser = Meteor.users.findOne
+    ({_id:params._userId});
     var history;
     //crossreference this with camps db, to get full history
     _.each(tempUser.camps, function(x){
@@ -20,11 +22,9 @@ GET.route(baseUrl + 'users/:userId/history', function(params, req, res, next) {
     });
     res.end(JSON.stringify(history));
 });
-Meteor.setInterval(function() {
-    debugger;
-}, 1000*90);
 //kamp bekijken
 GET.route(baseUrl + 'camp/:_id', function (params, req, res, next) {
+    debugger;
     res.end(JSON.stringify(camps.find({_id: params._id}).fetch()));
 });
 //Medewerkers bekijken
@@ -44,7 +44,6 @@ GET.route(baseUrl + 'activities', function(params, req, res, next) {
 
 var POST = Picker.filter(function(request, response){
     response.setHeader("Access-Control-Allow-Origin","*");
-    debugger;
     return request.method = "POST";
 })
 //inschrijven voor kamp
@@ -53,49 +52,56 @@ POST.route(baseUrl + 'camp/register', function(params, req, res, next) {
     //if camp not full
     //register
     var camp = camps.findOne({
-        _id: req.body._id
+        _id: req.body.campId
     });
-    if(camp.members.accepted.length+camp.members.pending.length >= camp.maxMembers)
+    if(!camp.attendees.accepted)
+    camp.attendees.accepted = [];
+    if(!camp.attendees.pending)
+    camp.attendees.pending = [];
+    if(camp.attendees.accepted.length+camp.attendees.pending.length >= camp.maxMembers)
     res.end("Camp-Full");
-    if(!req.body.rijksregister)
-    res.end("Enter a valid national-identification-number");
     //TODO check if account contains all necessary data
-    camps.update({
-        _id : req.body._id
+    if(req.body.campId, req.body.userId)
+    {camps.update({
+        _id : req.body.campId
     }, {
         $push: {
-            'members.pending': {
-                rijksregisternummer : req.body.rijksregister,
-                timeStamp: new Date()
+            'attendees.pending': {
+                userId: req.body.userId,
+                timestamp: new Date()
             }
         }
-    })
+    });
+res.end("success");
+}
+res.end("failure");
+
 });
-POST.route(baseUrl + 'camp/add', function(params, req, res, next){
-    //todo: add camp
-    if(params.title && params.description && params.place && params.departureTime 
-    && params.returnTime && params.price && params.minAge && params.maxAge 
-    && params.maxMembers && params.transport && params.formule && params.discounts
-    && params.additionalInfo && params.contactInfo && params.employees)
+POST.route(baseUrl + 'camp/add', 
+function(params, req, res, next){
+    if(req.body.title && req.body.description && req.body.place && req.body.departureTime 
+    && req.body.returnTime && req.body.price && req.body.minAge && req.body.maxAge 
+    && req.body.maxMembers && req.body.transport && req.body.formule && req.body.discounts
+    && req.body.additionalInfo && req.body.contactInfo && req.body.employees /*&& req.body.pictures */)
     {
         camps.insert({
-            title: params.title,
-            description : params.description,
-            place : params.place,
-            departureTime : params.departureTime,
-            returnTime : params.returnTime,
-            attendees : params.attendees,
-            pictures : params.pictures,
-            price : params.price,
-            minAge : params.minAge,
-            maxAge : params.maxAge,
-            maxMembers : params.maxMembers,
-            transport : params.transport,
-            formule : params.formule,
-            discounts : params.discounts,
-            additionalInfo : params.additionalInfo,
-            contactInfo : params.contactInfo,
-            employees : params.employees
+            title: req.body.title,
+            description : req.body.description,
+            place : req.body.place,
+            departureTime : req.body.departureTime,
+            returnTime : req.body.returnTime,
+            attendees : {},
+            //pictures : req.body.pictures,
+            price : req.body.price,
+            minAge : req.body.minAge,
+            maxAge : req.body.maxAge,
+            maxMembers : req.body.maxMembers,
+            transport : req.body.transport,
+            formule : req.body.formule,
+            discounts : req.body.discounts,
+            additionalInfo : req.body.additionalInfo,
+            contactInfo : req.body.contactInfo,
+            employees : req.body.employees
         })
         res.end("success");
         }
@@ -104,11 +110,12 @@ POST.route(baseUrl + 'camp/add', function(params, req, res, next){
 })
 //add new activity
 POST.route(baseUrl + 'activity/add', function(params, req, res, next) {
-    if(params.place && params.timeStamp && params.description)
+    debugger;
+    if(req.body.title && req.body.place && req.body.timestamp && req.body.description)
     {
-        activities.insert({title: params.title, 
-            place: params.place, timestamp: params.timestamp,
-        description: params.description, attending: [], notSure: [], absent: []
+        activities.insert({title: req.body.title, 
+            place: req.body.place, timestamp: req.body.timestamp,
+        description: req.body.description, attending: [], notSure: [], absent: []
         });
         res.end("success");
     }
@@ -116,93 +123,185 @@ POST.route(baseUrl + 'activity/add', function(params, req, res, next) {
 })
 //change registrations
 POST.route(baseUrl + 'camp/registrations', function(params, req, res, next){
-    //todo: move pending to accepted/denied
+    debugger;
+    if(req.body.userId&& req.body.attendeeId&&req.body.campId)
+    {
+        if(req.body.attendance === "accepted")
+        {
+            camps.update({
+    _id: req.body.campId
+  }, {
+    $addToSet: {
+      "attendees.accepted": {
+        "userId": req.body.attendeeId,
+        "timestamp":new Date()
+      }
+    }
+  });
+  camps.update({
+    _id: req.body.campId
+  }, {
+    $pull: {
+      "attendees.pending": {
+        "userId": req.body.attendeeId,
+        "timestamp":new Date()
+      }
+    }
+  });
+  res.end("success");
+        }
+        else
+        {
+camps.update({
+    _id: req.body.campId
+  }, {
+    $addToSet: {
+      "attendees.denied": {
+        "userId": req.body.attendeeId,
+        "comment":req.body.comment,
+        "timestamp":new Date()
+      }
+    }
+  });
+  camps.update({
+    _id: req.body.campId
+  }, {
+    $pull: {
+      "attendees.pending": {
+        "userId": req.body.attendeeId,
+        "timestamp":new Date()
+      }
+    }
+  });
+  res.end("success")
+        }
+    }
+    res.end("failure");
 })
 //register attendance
-POST.route(baseUrl + 'activity', function(params, req, res, next) {
-    switch(params.attendance)
+POST.route(baseUrl + 'activity/attendance', function(params, req, res, next) {
+    debugger;
+    if(req.body.attendance&&req.body.campId&&req.body.userId)
+    {switch(req.body.attendance)
     {
-        case "yes" : activities.update({_id: params._id},{
+        case "yes" : activities.update({_id: req.body.campId},{
             $push: {
                 attending : {
                     timestamp: new Date(), 
-                    user: params.userId
+                    user: req.body.userId
                 }
             }
         });
         break;
-        case "no": activities.update({_id: params._id},{
+        case "no": activities.update({_id: req.body.campId},{
             $push: {
                 absent : {
                     timestamp: new Date(), 
-                    user: params.userId
+                    user: req.body.userId
                 }
             }
         });
         break;
         case "maybe": {
-            activities.update({_id: params._id},{
+            activities.update({_id: req.body.campId},{
             $push: {
                 notSure : {
                     timestamp: new Date(), 
-                    user: params.userId
+                    user: req.body.userId
                 }
             }
         });
         break;
         }
     }  
+    res.end("success");
+} else
+res.end("failure");
 })
 //Login
 POST.route(baseUrl + 'user/login', function(params, req, res, next){
-    var user = Meteor.users.findOne({_id: params._id});
-    if(params.password !== user.password)
+    var user = Accounts.findUserByEmail(req.body.email);
+    if(!ApiPassword.validate({email: user.emails[0].address, password: req.body.password}))
     {
         res.end("Unknown combination");
     }
     if(user.profile.role === "admin" || user.profile.role ==="employee")
-    res.end(JSON.stringify(employees.findOne({_id: params.userId})));
+    res.end(JSON.stringify(employees.findOne({_id: req.body.userId})));
     else 
-    res.end(JSON.stringify(participants.findOne({_id: params.userId})));
+    res.end(JSON.stringify(participants.findOne({_id: req.body.userId})));
 })
 //Register
 POST.route(baseUrl + 'user/register', function(params, req, res, next) {
-    debugger;
-    if(params.email && params.password && params.role)
+    if(req.body.email  && req.body.role)
     {
-        Accounts.createUser({
-            email: params.email,
-            password: params.password,
+        if(!req.body.role||req.body.role==="participant")
+        {
+            if(req.body.password &&req.body.member&&req.body.contact&&req.body.parent&&req.body.participant&&req.body.emergencyContact&&req.body.additionalInfo)
+            {
+            var id = Accounts.createUser({
+            email: req.body.email,
+            password: req.body.password,
             profile: {
-                role: params.role
+                role: req.body.role
             }
         });
-        res.end("success")
+        Accounts.sendVerificationEmail(id);
+            participants.insert({
+                _id: id,
+                member: req.body.member,
+                contact: req.body.contact,
+                parent: req.body.parent,
+                participant: req.body.participant,
+                emergencyContact: req.body.emergencyContact,
+                additionalInfo: req.body.additionalInfo
+            });
+            res.end("success")
+        }}
+        else
+        {
+            if(req.body.role==="employee"||req.body.role==="admin")
+            {
+                if(req.body.firstName&&req.body.name&&req.body.tel&&req.body.email&&req.body.role)
+                {
+            var id = Accounts.createUser({
+            email: req.body.email,
+            profile: {
+                role: req.body.role
+            }
+        });
+        Accounts.sendEnrollmentEmail(id);
+            employees.insert({
+                _id: id,
+                firstName: req.body.firstName,
+                name: req.body.name,
+                tel: req.body.tel,
+                email: req.body.email,
+                role: req.body.role
+            });
+            res.end("success")
+            }}
+        }
     }
     res.end("failure");
-    
 })
 POST.route(baseUrl + 'user/reset', function(params, req, res, next) {
     //Todo: reset password in db
-    Accounts.sendResetPasswordEmail(params.userId);
+    Accounts.sendResetPasswordEmail(Accounts.findUserByEmail(req.body.email)._id);
     res.end("email-sent");
 })
 POST.route(baseUrl + 'user/modify', function(params, req, res, next){
     //Todo: allow changing user information
-    var user = Meteor.users.findOne({_id: params.userId});
+    var user = Meteor.users.findOne({_id: req.body.userId});
     if(user)
    { if(user.profile.role === "admin"|| user.profile.role==="employee")
         {
-            if(params.firstName&&params.name&&params.tel&&params.email&&params.role)
+            if(req.body.tel)
             {
                 employees.update({
-                    _id: params.userId
-                },{
-                    firstName : params.firstName,
-                    name : params.name,
-                    tel : params.tel,
-                    email : params.email,
-                    role : params.role
+                    _id: req.body.userId
+                },{$set:{
+                    tel : req.body.tel
+                }
                 });
                 res.end("success")
             }
@@ -210,17 +309,18 @@ POST.route(baseUrl + 'user/modify', function(params, req, res, next){
         }
         else
         {
-            if(params.member&&params.contact&&params.parent&&params.participant&&params.emergencyContact&&params.additionalInformation)
+            if(req.body.member&&req.body.contact&&req.body.parent&&req.body.participant
+            &&req.body.emergencyContact&&req.body.additionalInformation)
             {
                 participants.update({
-                    _id: params.userId
+                    _id: req.body.userId
                 },{
-                    member : params.member,
-                    contact : params.contact,
-                    parent : params.parent,
-                    participant : params.participant,
-                    emergencyContact : params.emergencyContact,
-                    additionalInformation : params.additionalInformation
+                    member : req.body.member,
+                    contact : req.body.contact,
+                    parent : req.body.parent,
+                    participant : req.body.participant,
+                    emergencyContact : req.body.emergencyContact,
+                    additionalInformation : req.body.additionalInformation
                 })
                 res.end("success");
             }

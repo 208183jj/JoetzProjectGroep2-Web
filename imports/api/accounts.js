@@ -22,7 +22,10 @@ AccountsTemplates.configure({
   //termsUrl: 'PathToTemplateWithTermsAndConditions',
 });
 if(Meteor.isServer) {
-    Accounts.onCreateUser(function(option, user) {
+    Accounts.onCreateUser(function(options, user) {
+      debugger;
+      user.profile = options.profile;
+      return user;
         //check all required fields
     });
 Accounts.emailTemplates = {
@@ -46,5 +49,14 @@ Accounts.emailTemplates = {
        url + "\n\n Groetjes, \n Joetz";
     }
   },
+  enrollAccount: {
+    subject: function(user) {
+      return "Verify Email"
+    },
+    text: function(user, url) {
+      return "Beste,\n\n Bedankt voor je registratie \n Bevestig snel je e-mailadres, en kies een paswoord, zodat je kan starten met het zoeken naar een leuk kamp! \n\n" + 
+       url + "\n\n Groetjes, \n Joetz";
+    }
+  }
 };
 }
