@@ -1,0 +1,10 @@
+<template name="history">
+  <h2>Historiek van mijn kampen</h2>
+  <ul id="campList">
+  {{#each camps}}
+    <li id="{{_id}}" class="camp">{{title}} <br>
+      {{place}} - {{departureTime}} -- {{returnTime}}</li>
+  {{/each}}
+  </ul>
+  <div id="campHere"></div>
+</template>

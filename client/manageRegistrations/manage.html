@@ -1,0 +1,11 @@
+<template name="manage">
+  <h4>pending registrations</h4>
+  <ul>
+{{#each registrations}}
+
+  <li id="{{_id}}">
+  <input type="checkbox" label="{{userId}}  -- {{timestamp}}" name="user" id="{{userId}}">
+  </li>
+{{/each}}
+  </ul>
+</template>

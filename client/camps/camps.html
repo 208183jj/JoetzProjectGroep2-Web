@@ -1,0 +1,13 @@
+<template name="camps">
+  <button id="addCamp">Voeg kamp toe</button>
+  <ul>
+      {{#each camps}}
+    <li id="{{_id}}">
+    {{title}}
+      <br> {{departureTime}} -- {{returnTime}}
+      <br> {{location}} {{price}} {{ages}}
+    </li>
+    {{/each}}
+  </ul>
+  <div id="campHere"></div>
+</template>

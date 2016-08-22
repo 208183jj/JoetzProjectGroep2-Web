@@ -21,7 +21,7 @@ camps = new Mongo.Collection('Camps');
  additionalInfo
  contactInfo
  employees = [{userId}]
- */ 
+ */
 
 activities = new Mongo.Collection('Activities');
 /*
@@ -38,34 +38,34 @@ activities = new Mongo.Collection('Activities');
 participants = new Mongo.Collection('Participants');
 /*
   _id  --> gekoppeld aan users-tabel
-  member: {aansluitingsnummer1 (optioneel) 
+  member: {aansluitingsnummer1 (optioneel)
         aansluitingsnummer2 (optioneel)
         code
         }
   contact: {
-      national-identification-number
+      nationalIdentificationNumber
       voornaam
       naam
       straat
       huisnummer en bus
       gemeente
       postcode
-      e-mail
+      email
       telefoon
   }
   parent: {
-      national-identification-number
+      nationalIdentificationNumber
       voornaam
       naam
       straat
       huisnummer en bus
       gemeente
       postcode
-      e-mail
+      email
       telefoon
   }
   participant: {
-      national-identification-number
+      nationalIdentificationNumber
       voornaam
       naam
       geboortedatum
@@ -79,7 +79,7 @@ participants = new Mongo.Collection('Participants');
       naam
       telefoon
   }
-  AdditionalInformation: 
+  AdditionalInformation:
  */
 employees = new Mongo.Collection('Employees');
 /*

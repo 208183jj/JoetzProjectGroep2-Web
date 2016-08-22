@@ -1,0 +1,8 @@
+<template name="addToCamp">
+  <form>
+  {{#each employees}}
+  <input type="checkbox" value="{{firstName}} {{name}}" name="employee" id="{{_id}}">
+  {{/each}}
+  <input type="submit" value="indienen">
+  </form>
+</template>

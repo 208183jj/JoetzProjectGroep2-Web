@@ -1,0 +1,10 @@
+<template name="employees">
+  <ul>
+{{#each employees}}
+    <li id="{{_id}}">
+  {{firstName}} {{name}}<br>
+  {{tel}}
+    </li>
+{{/each}}
+  </ul>
+</template>

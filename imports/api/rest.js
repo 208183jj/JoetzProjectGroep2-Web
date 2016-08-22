@@ -1,5 +1,5 @@
-var bodyParser = Meteor.npmRequire('body-parser');
-var baseUrl = '/api/v1/'
+import bodyParser from 'body-parser';
+var baseUrl = '/api/v1/';
 Picker.middleware(bodyParser.json());
 Picker.middleware(bodyParser.urlencoded({
   extended: false
@@ -12,7 +12,6 @@ var GET = Picker.filter(function (request, response) {
 //historiek bekijken
 GET.route(baseUrl + 'users/:userId/history', function(params, req, res, next) {
     //check user-acc for history
-    debugger;
     var tempUser = Meteor.users.findOne
     ({_id:params._userId});
     var history;
@@ -22,30 +21,32 @@ GET.route(baseUrl + 'users/:userId/history', function(params, req, res, next) {
     });
     res.end(JSON.stringify(history));
 });
+GET.route(baseUrl+'camps/upcoming', function(params, req, res, next) {
+  res.end(JSON.stringify(camps.find({_id: _id, departureTime: {$gte: new Date()}}).fetch()));
+});
 //kamp bekijken
 GET.route(baseUrl + 'camp/:_id', function (params, req, res, next) {
-    debugger;
     res.end(JSON.stringify(camps.find({_id: params._id}).fetch()));
 });
 //Medewerkers bekijken
 GET.route(baseUrl + 'employees', function(params, req, res, next) {
     res.end(JSON.stringify(employees.find({}).fetch()));
-})
+});
 //Medewerker bekijken
 GET.route(baseUrl + 'employees/:userId', function(params, req, res, next){
     res.end(JSON.stringify(employees.findOne({_id: params.userId})));
-})
+});
 //Activiteiten bekijken
 GET.route(baseUrl + 'activities', function(params, req, res, next) {
     //todo:  send first 20 or so
     res.end(JSON.stringify(activities.find({},{timestamp:-1}).fetch()));
-})
+});
 
 
 var POST = Picker.filter(function(request, response){
     response.setHeader("Access-Control-Allow-Origin","*");
-    return request.method = "POST";
-})
+    return request.method == "POST";
+});
 //inschrijven voor kamp
 POST.route(baseUrl + 'camp/register', function(params, req, res, next) {
     //check if camp is full
@@ -61,7 +62,7 @@ POST.route(baseUrl + 'camp/register', function(params, req, res, next) {
     if(camp.attendees.accepted.length+camp.attendees.pending.length >= camp.maxMembers)
     res.end("Camp-Full");
     //TODO check if account contains all necessary data
-    if(req.body.campId, req.body.userId)
+    if(req.body.campId && req.body.userId)
     {camps.update({
         _id : req.body.campId
     }, {
@@ -77,10 +78,10 @@ res.end("success");
 res.end("failure");
 
 });
-POST.route(baseUrl + 'camp/add', 
+POST.route(baseUrl + 'camp/add',
 function(params, req, res, next){
-    if(req.body.title && req.body.description && req.body.place && req.body.departureTime 
-    && req.body.returnTime && req.body.price && req.body.minAge && req.body.maxAge 
+    if(req.body.title && req.body.description && req.body.place && req.body.departureTime
+    && req.body.returnTime && req.body.price && req.body.minAge && req.body.maxAge
     && req.body.maxMembers && req.body.transport && req.body.formule && req.body.discounts
     && req.body.additionalInfo && req.body.contactInfo && req.body.employees /*&& req.body.pictures */)
     {
@@ -102,28 +103,26 @@ function(params, req, res, next){
             additionalInfo : req.body.additionalInfo,
             contactInfo : req.body.contactInfo,
             employees : req.body.employees
-        })
+        });
         res.end("success");
         }
         else
-        res.end("failure")
-})
+        res.end("failure");
+});
 //add new activity
 POST.route(baseUrl + 'activity/add', function(params, req, res, next) {
-    debugger;
     if(req.body.title && req.body.place && req.body.timestamp && req.body.description)
     {
-        activities.insert({title: req.body.title, 
+        activities.insert({title: req.body.title,
             place: req.body.place, timestamp: req.body.timestamp,
         description: req.body.description, attending: [], notSure: [], absent: []
         });
         res.end("success");
     }
     res.end("failure");
-})
+});
 //change registrations
 POST.route(baseUrl + 'camp/registrations', function(params, req, res, next){
-    debugger;
     if(req.body.userId&& req.body.attendeeId&&req.body.campId)
     {
         if(req.body.attendance === "accepted")
@@ -173,21 +172,20 @@ camps.update({
       }
     }
   });
-  res.end("success")
+  res.end("success");
         }
     }
     res.end("failure");
-})
+});
 //register attendance
 POST.route(baseUrl + 'activity/attendance', function(params, req, res, next) {
-    debugger;
     if(req.body.attendance&&req.body.campId&&req.body.userId)
     {switch(req.body.attendance)
     {
         case "yes" : activities.update({_id: req.body.campId},{
             $push: {
                 attending : {
-                    timestamp: new Date(), 
+                    timestamp: new Date(),
                     user: req.body.userId
                 }
             }
@@ -196,7 +194,7 @@ POST.route(baseUrl + 'activity/attendance', function(params, req, res, next) {
         case "no": activities.update({_id: req.body.campId},{
             $push: {
                 absent : {
-                    timestamp: new Date(), 
+                    timestamp: new Date(),
                     user: req.body.userId
                 }
             }
@@ -206,18 +204,18 @@ POST.route(baseUrl + 'activity/attendance', function(params, req, res, next) {
             activities.update({_id: req.body.campId},{
             $push: {
                 notSure : {
-                    timestamp: new Date(), 
+                    timestamp: new Date(),
                     user: req.body.userId
                 }
             }
         });
         break;
         }
-    }  
+    }
     res.end("success");
 } else
 res.end("failure");
-})
+});
 //Login
 POST.route(baseUrl + 'user/login', function(params, req, res, next){
     var user = Accounts.findUserByEmail(req.body.email);
@@ -226,10 +224,10 @@ POST.route(baseUrl + 'user/login', function(params, req, res, next){
         res.end("Unknown combination");
     }
     if(user.profile.role === "admin" || user.profile.role ==="employee")
-    res.end(JSON.stringify(employees.findOne({_id: req.body.userId})));
-    else 
-    res.end(JSON.stringify(participants.findOne({_id: req.body.userId})));
-})
+    res.end(JSON.stringify(employees.findOne({_id: user._id})));
+    else
+    res.end(JSON.stringify(participants.findOne({_id: user._id})));
+});
 //Register
 POST.route(baseUrl + 'user/register', function(params, req, res, next) {
     if(req.body.email  && req.body.role)
@@ -255,7 +253,7 @@ POST.route(baseUrl + 'user/register', function(params, req, res, next) {
                 emergencyContact: req.body.emergencyContact,
                 additionalInfo: req.body.additionalInfo
             });
-            res.end("success")
+            res.end("success");
         }}
         else
         {
@@ -325,7 +323,7 @@ POST.route(baseUrl + 'user/modify', function(params, req, res, next){
                 res.end("success");
             }
             res.end("Not-Enough-Data");
-        } 
+        }
     }
     else {
         res.end("Unknown-ID");

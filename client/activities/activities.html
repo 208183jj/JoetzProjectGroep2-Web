@@ -1,0 +1,10 @@
+<template name="activities">
+  <ul>
+  {{#each activity}}
+    <li id="{{_id}}">{{timestamp}} <br>
+      {{title}} --- {{place}}
+    </li>
+  {{/each}}
+  </ul>
+  {{> addActivity}}
+</template>

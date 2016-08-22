@@ -1,0 +1,49 @@
+<template name="change">
+<form>
+  <h4>inloggegevens</h4>
+  <input type="email" value="{{user.email}}" name="login">
+
+  <h4>Informatie aansluiting mutualiteit</h4>
+  <input type="number" value="{{user.member.aansluitingsnummer1}}" name="aan1">
+  <input type="number" value="{{user.member.aansluitingsnummer2}}" name="aan2">
+  <input type="text" value="{{user.member.code}}" name="code">
+  <h4>Informatie contactpersoon</h4>
+  <input type="number" value="{{user.contact.nationalIdentificationNumber}}" name="ninContact">
+  <input type="text" value="{{user.contact.voornaam}}" name="firstNameContact">
+  <input type="text" value="{{user.contact.naam}}" name="nameContact">
+  <input type="text" value="{{user.contact.straat}}" name="streetContact">
+  <input type="text" value="{{user.contact.huisnummerEnBus}}" name="numberContact">
+  <input type="text" value="{{user.contact.gemeente}}" name="cityContact">
+  <input type="number" value="{{user.contact.postcode}}" name="postalCodeContact">
+  <input type="email" value="{{user.contact.email}}" name="emailContact">
+  <input type="tel" value="{{user.contact.telefoon}}" name="telContact">
+  <h4>Informatie ouder</h4>
+  <input type="number" value="{{user.parent.nationalIdentificationNumber}}" name="ninParent">
+  <input type="text" value="{{user.parent.voornaam}}" name="firstNameParent">
+  <input type="text" value="{{user.parent.naam}}" name="nameParent">
+  <input type="text" value="{{user.parent.straat}}" name="streetParent">
+  <input type="text" value="{{user.parent.huisnummerEnBus}}" name="numberParent">
+  <input type="text" value="{{user.parent.gemeente}}" name="cityParent">
+  <input type="number" value="{{user.parent.postcode}}" name="postalCodeParent">
+  <input type="email" value="{{user.parent.email}}" name="emailParent">
+  <input type="tel" value="{{user.parent.telefoon}}" name="telParent">
+  <h4>Informatie deelnemer</h4>
+  <input type="number" value="{{user.participant.nationalIdentificationNumber}}" name="ninParticipant">
+  <input type="text" value="{{user.participant.voornaam}}" name="firstNameParticipant">
+  <input type="text" value="{{user.participant.naam}}" name="nameParent">
+  <input type="text" value="{{user.participant.straat}}" name="streetParent">
+  <input type="text" value="{{user.participant.huisnummerEnBus}}" name="numberParent">
+  <input type="text" value="{{user.participant.gemeente}}" name="cityParent">
+  <input type="number" value="{{user.participant.postcode}}" name="postalCodeParent">
+  <input type="email" value="{{user.participant.email}}" name="emailParent">
+  <input type="tel" value="{{user.participant.telefoon}}" name="telParent">
+  <h4>Informatie noodContact</h4>
+  <input type="text" value="{{user.emergencyContact.voornaam}}" name="firstNameEmergency">
+  <input type="text" value="{{user.emergencyContact.naam}}" name="nameEmergency">
+  <input type="tel" value="{{user.emergencyContact.telefoon}}" name="telEmergency">
+  <h4>Bijkomende Informatie</h4>
+  <input type="text" value="{{user.additionalInfo}}" name="additionalInfo">
+
+  <input type="submit" value="indienen">
+</form>
+</template>

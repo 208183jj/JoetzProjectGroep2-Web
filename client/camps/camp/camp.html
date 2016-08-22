@@ -1,0 +1,23 @@
+<template name="camp">
+  <h4>{{title}}</h4>
+  deelnemers: {{attendees}}
+  foto's: {{pictures}}
+  {{#if isUpcoming}}
+  prijs: {{price}}
+  leeftijd: {{ages}}
+  periode: {{departureTime}} -- {{endTime}}
+  locatie: {{location}}
+  {{/if}}
+
+  {{description}}
+
+  {{#if isUpcoming}}
+    {{#if currentUser}}
+    <button id="subscribe">inschrijven</button>
+  {{/if}}
+  {{#if isAdmin}}
+    <button id="manage">beheer inschrijvingen</button>
+    <div id="management"></div>
+  {{/if}}
+  {{/if}}
+</template>

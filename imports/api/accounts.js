@@ -45,7 +45,7 @@ Accounts.emailTemplates = {
       return "Verify Email";
     },
     text: function (user, url) {
-       return "Beste,\n\n Bedankt voor je registratie \n Bevestig snel je e-mailadres zodat je kan starten met het zoeken naar een leuk kamp! \n\n" + 
+       return "Beste,\n\n Bedankt voor je registratie \n Bevestig snel je e-mailadres zodat je kan starten met het zoeken naar een leuk kamp! \n\n" +
        url + "\n\n Groetjes, \n Joetz";
     }
   },
@@ -54,7 +54,7 @@ Accounts.emailTemplates = {
       return "Verify Email"
     },
     text: function(user, url) {
-      return "Beste,\n\n Bedankt voor je registratie \n Bevestig snel je e-mailadres, en kies een paswoord, zodat je kan starten met het zoeken naar een leuk kamp! \n\n" + 
+      return "Beste,\n\n Bedankt voor je registratie \n Bevestig snel je e-mailadres, en kies een paswoord, zodat je kan starten met het zoeken naar een leuk kamp! \n\n" +
        url + "\n\n Groetjes, \n Joetz";
     }
   }
