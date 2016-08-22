@@ -1,3 +1,7 @@
+import { Template } from 'meteor/templating';
+import { ReactiveVar } from 'meteor/reactive-var';
+import { Session } from 'meteor/session';
+import { Blaze } from 'meteor/blaze';
 var allCamps = function() {
   Meteor.call('camp.upcoming.get', function(err, res){
     if(!err)
@@ -22,4 +26,6 @@ Template.camps.events({
 });
 Router.route('/camps', function(){
   this.render('camps');
+}, {
+  name:"camps"
 });

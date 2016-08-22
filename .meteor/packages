@@ -23,10 +23,10 @@ iron:router
 gfk:mailgun-api
 sacha:spin
 fourseven:scss
-materialize:materialize
 useraccounts:materialize
 useraccounts:iron-routing
 fortawesome:fontawesome
 accounts-ui
 reactive-dict
 underscorestring:underscore.string
+materialize:materialize@=0.97.6

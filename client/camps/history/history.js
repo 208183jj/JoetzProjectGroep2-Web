@@ -22,4 +22,6 @@ Template.history.events({
 })
 Router.route('/camps/history', function(){
   this.render('history');
+}, {
+  name:"history"
 });

@@ -1,3 +1,6 @@
+import { Template } from 'meteor/templating';
+import { ReactiveVar } from 'meteor/reactive-var';
+import { Session } from 'meteor/session';
 Template.addCamp.helpers({
 
 });
@@ -12,4 +15,6 @@ Template.addCamp.events({
 });
 Router.route('/addCamp', function(){
   this.render('addCamp');
+}, {
+  name:'addCamp'
 });

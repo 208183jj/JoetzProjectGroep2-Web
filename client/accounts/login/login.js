@@ -1,3 +1,6 @@
+import { Template } from 'meteor/templating';
+import { ReactiveVar } from 'meteor/reactive-var';
+import { Session } from 'meteor/session';
 Template.login.helpers({
 
 });
@@ -21,4 +24,6 @@ Template.login.events({
 })
 Router.route('/account/login', function(){
   this.render('login');
+}, {
+  name:"login"
 });

@@ -1,3 +1,6 @@
+import { Template } from 'meteor/templating';
+import { ReactiveVar } from 'meteor/reactive-var';
+import { Session } from 'meteor/session';
 Template.change.helpers({
   'user': function() {
     return Session.get('currentUser');
@@ -57,4 +60,9 @@ Template.change.events({
     Meteor.call('participant.modify', Session.get('currentUser')._id, member, contact, parent, participant, emergencyContact, additionalInformation)
   }
 }
+});
+Router.route('/account/change', function(){
+  this.render('change');
+}, {
+  name:"change"
 });

@@ -34,4 +34,6 @@ Template.camp.events({
 })
 Router.route('/camps/camp', function(){
   this.render('camp');
+}, {
+  name:"camp"
 });

@@ -1,3 +1,6 @@
+import { Template } from 'meteor/templating';
+import { ReactiveVar } from 'meteor/reactive-var';
+import { Session } from 'meteor/session';
 Template.employee.helpers({
   'name': function() {
     return Session.get('selectedEmployee').name;
@@ -11,4 +14,6 @@ Template.employee.helpers({
 });
 Router.route('/employee', function(){
   this.render('employee');
+}, {
+  name:"employee"
 });

@@ -1,3 +1,6 @@
+import { Template } from 'meteor/templating';
+import { ReactiveVar } from 'meteor/reactive-var';
+import { Session } from 'meteor/session';
 Template.register.helpers({
 
 });
@@ -59,4 +62,6 @@ Template.register.events({
 });
 Router.route('/account/register', function(){
   this.render('register');
+}, {
+  name:"register"
 });

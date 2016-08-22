@@ -1,3 +1,6 @@
+import { Template } from 'meteor/templating';
+import { ReactiveVar } from 'meteor/reactive-var';
+import { Session } from 'meteor/session';
 var getEmployees = function(){
   Meteor.call('employees.get', _id, function(err, res){
     if(!err)
@@ -16,10 +19,10 @@ Template.employees.events({
   'click li' : function(event, template) {
     Session.set('selectedEmployee',event.currentTarget._id);
     Router.go('employee');
-    //TODO: get id of event-li
-    //Reroute to specific employee
   }
 });
 Router.route('/employees', function(){
   this.render('employees');
+}, {
+  name:"employees"
 });
